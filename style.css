@@ -1,0 +1,269 @@
+:root {
+    --green: #7fb109;
+    --grey: #d7d7d7;
+    --radius: 4px;
+}
+
+html, body {
+    margin: 0;
+    padding: 4px;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    color: black;
+    background-color: #ADBDCC;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+
+.header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 6px;
+    height: 10%;
+    border-radius: var(--radius);
+    background-image: url("./assets/bg_market.jpg");
+    box-shadow: 0 0 4px 0px rgb(0 0 0 / 60%);
+}
+
+.header h2 {
+    letter-spacing: 2px;
+    background-color: #ADBDCC;
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: inset 0 0 6px 0px rgb(0 0 0);
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    gap: 6px;
+    height: 90%;
+}
+
+.productWrapper {
+    padding: 6px;
+    height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background-color: white;
+    border-radius: var(--radius);;
+}
+
+#productNav {
+    display: flex;
+    flex: auto;
+    justify-content: flex-start;
+    gap: 12px;
+    border-bottom: 1px solid var(--grey);
+    padding: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 6px;
+}
+
+.productCategory {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: #dc9651;
+    padding: 8px;
+    border-radius: var(--radius);;
+    cursor: pointer;
+}
+
+#productList {
+    display: flex;
+    flex-direction: column;
+    flex: 90%;
+    gap: 6px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+.productDetails {
+    width: 100;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: space-between;
+    padding: 6px;
+    gap: 6px;
+    border: 1px solid var(--grey);
+}
+
+.price {
+    margin-top: 6px;
+    color: var(--green);
+}
+
+.plus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    background-color: var(--green);
+    cursor: pointer;
+    user-select: none;
+}
+
+.remove {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 24px;
+    height: 24px;
+    background-color: var(--grey);
+    cursor: pointer;
+    user-select: none;
+}
+
+#shoppingBasket {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    word-break: break-word;
+}
+
+.shoppingBasket {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    min-width: 270px;
+    width: 270px;
+    height: 100%;
+    padding: 6px;
+    padding-top: 0;
+    gap: 12px;
+    background-color: white;
+    border-radius: var(--radius);;
+    word-wrap: break-word;
+}
+
+.shoppingBasket img {
+    width: 35px;
+    height: 35px;
+    padding: 2px;
+    object-fit: contain;
+    opacity: 0.6;
+}
+
+.shoppingBasket h5 {
+    display: flex;
+    justify-content: center;
+}
+
+.basketHeader {
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid var(--grey);
+    padding-top: 6px;
+}
+
+.basketHeader>div:nth-child(2) {
+    display: flex;
+    justify-content: center;
+}
+
+.basketDesciption {
+    font-size: 12px;
+    word-break: break-word;
+}
+
+.basketDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 2px;
+    border-bottom: 1px solid var(--grey);
+}
+
+.basketElement {
+    display: flex;
+    flex-direction: column;
+}
+
+.basketFlex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px
+}
+
+.priceCalc>.price {
+    margin-top: 0;
+    color: var(--green);
+}
+
+.priceCalc {
+    display: flex;
+    gap: 6px;
+}
+
+.totalCosts {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.alignRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+@media(max-width: 768px) {
+
+    html, body {
+        padding: 2px;
+    }
+
+    .flex {
+        flex-wrap: wrap-reverse;
+        margin-top: 0;
+        gap: 0;
+    }
+
+    .productWrapper {
+        width: 100%;
+        height: 70%;
+        margin-top: 0;
+    }
+
+    .shoppingBasket {
+        width: 100%;
+        height: calc(30% - 24px);
+        background-image: none;
+        border-radius: 6px;
+    }
+
+    #shoppingBasket {
+        margin-top: 0;
+    }
+
+    .shoppingBasket img {
+        width: 24px;
+        height: 24px;
+    }
+}

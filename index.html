@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js"></script>
+    <script src="./models/basket.class.js"></script>
+    <script src="./models/products.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,100&display=swap"
+        rel="stylesheet">
+    <title>Burrito Company</title>
+</head>
+
+<body onload="init()">
+
+    <header class="header">
+        <h2>Burrito Shop</h2>
+    </header>
+
+    <div class="flex">
+        <div class="productWrapper">
+            <div id="productNav">
+                <div class="productCategory" onclick="renderProducts('All')">All</div>
+            </div>
+
+            <div id="productList">
+            </div>
+        </div>
+
+        <div class="shoppingBasket">
+            <div class="basketHeader">
+                <div>
+                    <h5>Basket</h5>
+                </div>
+                <div><img src="./assets/basket.png"></div>
+            </div>
+            <div id="shoppingBasket">
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
