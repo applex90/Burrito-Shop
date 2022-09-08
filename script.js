@@ -5,8 +5,8 @@ let basket = null;
  * 
  */
 function init() {
-    render();
     basket = new Basket();
+    render();
 }
 
 /**
@@ -99,29 +99,20 @@ function renderCatOfProducts(products) {
 function renderBasket() {
     let basketID = document.getElementById('shoppingBasket');
     basketID.innerHTML = ``;
-    for (let i = 0; i < basket.items.length; i++) {
-        const element = basket.items[i][0];
-        basketID.innerHTML += /*html*/`
-        <div class="basketDetails">
-            <div class="basketElement">
-                <h6>#${element.id} - ${element.name}</h6>
-                <div class="basketDesciption">
-                ${element.description}
-                </div>
-                <div class="basketFlex">
-                    <div class="priceCalc">
-                        <div><b>${element.amount}</b></div>
-                        <div>x</div>
-                        <div>${element.price.toFixed(2).replaceAll('.', ',')} €  =</div>
-                        <div class="price"><b>${element.priceTotal.toFixed(2).replaceAll('.', ',')} €</b></div>
-                    </div> 
-                    <div class="remove" onclick="removeFromBasket(${i})"> <h2>-</h2></div>
-                </div>
-            </div> 
-        </div>
-        `;
+    for (let i = 0; i < basket.products.length; i++) {
+        const element = basket.products[i][0];
+        basketID.innerHTML += renderBasketHTML(element, i);
     }
-    basketID.innerHTML += /*html*/`
+    basketID.innerHTML += renderBasketPriceHTML();
+}
+
+
+/**
+ * This function renders the price of the shopping cart.
+ * 
+ */
+function renderBasketPriceHTML() {
+    return /*html*/`
     <div class="totalCosts" id="totalContainer">
         <div>
             <div>New customer discount:</div>
@@ -135,6 +126,36 @@ function renderBasket() {
     `;
 }
 
+
+/**
+ * This function renders the products of the shopping cart.
+ * 
+ * @param {object} element - Object of product.
+ * @param {number} i - Variable to iterate.
+ * @returns 
+ */
+function renderBasketHTML(element, i) {
+    return /*html*/`
+    <div class="basketDetails">
+        <div class="basketElement">
+            <h6>#${element.id} - ${element.name}</h6>
+            <div class="basketDesciption">
+            ${element.description}
+            </div>
+            <div class="basketFlex">
+                <div class="priceCalc">
+                    <div><b>${element.amount}</b></div>
+                    <div>x</div>
+                    <div>${element.price.toFixed(2).replaceAll('.', ',')} €  =</div>
+                    <div class="price"><b>${element.priceTotal.toFixed(2).replaceAll('.', ',')} €</b></div>
+                </div> 
+                <div class="remove" onclick="removeFromBasket(${i})"> <h2>-</h2></div>
+            </div>
+        </div> 
+    </div>
+    `;
+}
+
 /**
  * This function is called when an item is placed in the shopping cart. It is checked whether the article already exists in the shopping cart.
  * 
@@ -142,10 +163,10 @@ function renderBasket() {
  */
 function addToBasket(id) {
     if (checkIfIdExists(id)) {
-        basket.items[foundIndexInBasket(id)][0].amount++;
-        basket.items[foundIndexInBasket(id)][0].priceTotal += basket.items[foundIndexInBasket(id)][0].price;
+        basket.products[foundIndexInBasket(id)][0].amount++;
+        basket.products[foundIndexInBasket(id)][0].priceTotal += basket.products[foundIndexInBasket(id)][0].price;
     } else {
-        basket.items.push(getValuesForID(id));
+        basket.products.push(getValuesForID(id));
     }
     calcTotalBasketPrice();
     renderBasket();
@@ -158,7 +179,7 @@ function addToBasket(id) {
  * @returns - The index of the element.
  */
 function foundIndexInBasket(id) {
-    return basket.items.map(object => object[0].id).indexOf(id);
+    return basket.products.map(object => object[0].id).indexOf(id);
 }
 
 /**
@@ -168,7 +189,7 @@ function foundIndexInBasket(id) {
  * @returns - The length of the array.
  */
 function checkIfIdExists(id) {
-    let found = basket.items.filter(e => e[0].id == id);
+    let found = basket.products.filter(e => e[0].id == id);
     return found.length;
 }
 
@@ -189,31 +210,31 @@ function getValuesForID(id) {
  * @param {number} id - ID of the product to be added to the shopping cart.
  */
 function removeFromBasket(i) {
-    if (basket.items[i][0].amount == 1) {
-        basket.items.splice(i, 1);
+    if (basket.products[i][0].amount == 1) {
+        basket.products.splice(i, 1);
     } else {
-        basket.items[i][0].amount--;
-        basket.items[i][0].priceTotal -= basket.items[i][0].price;
+        basket.products[i][0].amount--;
+        basket.products[i][0].priceTotal -= basket.products[i][0].price;
     }
     calcTotalBasketPrice();
     renderBasket();
 }
 
 /**
- * The function calculates the total price of all items in the shopping cart. It also controls the visibility of the price display in the shopping cart.
+ * The function calculates the total price of all products in the shopping cart. It also controls the visibility of the price display in the shopping cart.
  * 
  */
 function calcTotalBasketPrice() {
     let totalElement = document.getElementById('shoppingBasket');
     let sum = 0;
 
-    basket.items.forEach(element => {
+    basket.products.forEach(element => {
         sum += element[0].priceTotal;
     });
 
     calcPriceTotal(sum);
 
-    if (!basket.items.length) {
+    if (!basket.products.length) {
         totalElement.style.display = 'none';
     } else {
         totalElement.style.display = 'flex';

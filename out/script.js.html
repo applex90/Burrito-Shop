@@ -33,8 +33,8 @@
  * 
  */
 function init() {
-    render();
     basket = new Basket();
+    render();
 }
 
 /**
@@ -127,29 +127,20 @@ function renderCatOfProducts(products) {
 function renderBasket() {
     let basketID = document.getElementById('shoppingBasket');
     basketID.innerHTML = ``;
-    for (let i = 0; i &lt; basket.items.length; i++) {
-        const element = basket.items[i][0];
-        basketID.innerHTML += /*html*/`
-        &lt;div class="basketDetails">
-            &lt;div class="basketElement">
-                &lt;h6>#${element.id} - ${element.name}&lt;/h6>
-                &lt;div class="basketDesciption">
-                ${element.description}
-                &lt;/div>
-                &lt;div class="basketFlex">
-                    &lt;div class="priceCalc">
-                        &lt;div>&lt;b>${element.amount}&lt;/b>&lt;/div>
-                        &lt;div>x&lt;/div>
-                        &lt;div>${element.price.toFixed(2).replaceAll('.', ',')} €  =&lt;/div>
-                        &lt;div class="price">&lt;b>${element.priceTotal.toFixed(2).replaceAll('.', ',')} €&lt;/b>&lt;/div>
-                    &lt;/div> 
-                    &lt;div class="remove" onclick="removeFromBasket(${i})"> &lt;h2>-&lt;/h2>&lt;/div>
-                &lt;/div>
-            &lt;/div> 
-        &lt;/div>
-        `;
+    for (let i = 0; i &lt; basket.products.length; i++) {
+        const element = basket.products[i][0];
+        basketID.innerHTML += renderBasketHTML(element, i);
     }
-    basketID.innerHTML += /*html*/`
+    basketID.innerHTML += renderBasketPriceHTML();
+}
+
+
+/**
+ * This function renders the price of the shopping cart.
+ * 
+ */
+function renderBasketPriceHTML() {
+    return /*html*/`
     &lt;div class="totalCosts" id="totalContainer">
         &lt;div>
             &lt;div>New customer discount:&lt;/div>
@@ -163,6 +154,36 @@ function renderBasket() {
     `;
 }
 
+
+/**
+ * This function renders the products of the shopping cart.
+ * 
+ * @param {object} element - Object of product.
+ * @param {number} i - Variable to iterate.
+ * @returns 
+ */
+function renderBasketHTML(element, i) {
+    return /*html*/`
+    &lt;div class="basketDetails">
+        &lt;div class="basketElement">
+            &lt;h6>#${element.id} - ${element.name}&lt;/h6>
+            &lt;div class="basketDesciption">
+            ${element.description}
+            &lt;/div>
+            &lt;div class="basketFlex">
+                &lt;div class="priceCalc">
+                    &lt;div>&lt;b>${element.amount}&lt;/b>&lt;/div>
+                    &lt;div>x&lt;/div>
+                    &lt;div>${element.price.toFixed(2).replaceAll('.', ',')} €  =&lt;/div>
+                    &lt;div class="price">&lt;b>${element.priceTotal.toFixed(2).replaceAll('.', ',')} €&lt;/b>&lt;/div>
+                &lt;/div> 
+                &lt;div class="remove" onclick="removeFromBasket(${i})"> &lt;h2>-&lt;/h2>&lt;/div>
+            &lt;/div>
+        &lt;/div> 
+    &lt;/div>
+    `;
+}
+
 /**
  * This function is called when an item is placed in the shopping cart. It is checked whether the article already exists in the shopping cart.
  * 
@@ -170,10 +191,10 @@ function renderBasket() {
  */
 function addToBasket(id) {
     if (checkIfIdExists(id)) {
-        basket.items[foundIndexInBasket(id)][0].amount++;
-        basket.items[foundIndexInBasket(id)][0].priceTotal += basket.items[foundIndexInBasket(id)][0].price;
+        basket.products[foundIndexInBasket(id)][0].amount++;
+        basket.products[foundIndexInBasket(id)][0].priceTotal += basket.products[foundIndexInBasket(id)][0].price;
     } else {
-        basket.items.push(getValuesForID(id));
+        basket.products.push(getValuesForID(id));
     }
     calcTotalBasketPrice();
     renderBasket();
@@ -186,7 +207,7 @@ function addToBasket(id) {
  * @returns - The index of the element.
  */
 function foundIndexInBasket(id) {
-    return basket.items.map(object => object[0].id).indexOf(id);
+    return basket.products.map(object => object[0].id).indexOf(id);
 }
 
 /**
@@ -196,7 +217,7 @@ function foundIndexInBasket(id) {
  * @returns - The length of the array.
  */
 function checkIfIdExists(id) {
-    let found = basket.items.filter(e => e[0].id == id);
+    let found = basket.products.filter(e => e[0].id == id);
     return found.length;
 }
 
@@ -217,31 +238,31 @@ function getValuesForID(id) {
  * @param {number} id - ID of the product to be added to the shopping cart.
  */
 function removeFromBasket(i) {
-    if (basket.items[i][0].amount == 1) {
-        basket.items.splice(i, 1);
+    if (basket.products[i][0].amount == 1) {
+        basket.products.splice(i, 1);
     } else {
-        basket.items[i][0].amount--;
-        basket.items[i][0].priceTotal -= basket.items[i][0].price;
+        basket.products[i][0].amount--;
+        basket.products[i][0].priceTotal -= basket.products[i][0].price;
     }
     calcTotalBasketPrice();
     renderBasket();
 }
 
 /**
- * The function calculates the total price of all items in the shopping cart. It also controls the visibility of the price display in the shopping cart.
+ * The function calculates the total price of all products in the shopping cart. It also controls the visibility of the price display in the shopping cart.
  * 
  */
 function calcTotalBasketPrice() {
     let totalElement = document.getElementById('shoppingBasket');
     let sum = 0;
 
-    basket.items.forEach(element => {
+    basket.products.forEach(element => {
         sum += element[0].priceTotal;
     });
 
     calcPriceTotal(sum);
 
-    if (!basket.items.length) {
+    if (!basket.products.length) {
         totalElement.style.display = 'none';
     } else {
         totalElement.style.display = 'flex';
@@ -269,13 +290,13 @@ function calcPriceTotal(sum) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addToBasket">addToBasket</a></li><li><a href="global.html#calcPriceTotal">calcPriceTotal</a></li><li><a href="global.html#calcTotalBasketPrice">calcTotalBasketPrice</a></li><li><a href="global.html#checkIfIdExists">checkIfIdExists</a></li><li><a href="global.html#foundIndexInBasket">foundIndexInBasket</a></li><li><a href="global.html#getValuesForID">getValuesForID</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#removeFromBasket">removeFromBasket</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#renderBasket">renderBasket</a></li><li><a href="global.html#renderCatOfProducts">renderCatOfProducts</a></li><li><a href="global.html#renderProductNav">renderProductNav</a></li><li><a href="global.html#renderProducts">renderProducts</a></li><li><a href="global.html#setActive">setActive</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addToBasket">addToBasket</a></li><li><a href="global.html#calcPriceTotal">calcPriceTotal</a></li><li><a href="global.html#calcTotalBasketPrice">calcTotalBasketPrice</a></li><li><a href="global.html#checkIfIdExists">checkIfIdExists</a></li><li><a href="global.html#foundIndexInBasket">foundIndexInBasket</a></li><li><a href="global.html#getValuesForID">getValuesForID</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#removeFromBasket">removeFromBasket</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#renderBasket">renderBasket</a></li><li><a href="global.html#renderBasketHTML">renderBasketHTML</a></li><li><a href="global.html#renderBasketPriceHTML">renderBasketPriceHTML</a></li><li><a href="global.html#renderCatOfProducts">renderCatOfProducts</a></li><li><a href="global.html#renderProductNav">renderProductNav</a></li><li><a href="global.html#renderProducts">renderProducts</a></li><li><a href="global.html#setActive">setActive</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Sep 08 2022 14:26:45 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Sep 08 2022 23:07:25 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>

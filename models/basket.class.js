@@ -3,7 +3,7 @@
  * 
  */
 class Basket {
-    items = [];
+    products = [];
     priceTotal = 0;
     discount = 5;
 
