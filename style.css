@@ -24,6 +24,10 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
+.d-green {
+    background-color: var(--green) !important;
+}
+
 .header {
     display: flex;
     justify-content: flex-start;
@@ -84,6 +88,10 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
 }
 
+.productCategory:hover {
+    opacity: 0.8;
+}
+
 #productList {
     display: flex;
     flex-direction: column;
@@ -120,6 +128,10 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--green);
     cursor: pointer;
     user-select: none;
+}
+
+.plus:hover {
+    opacity: 0.8;
 }
 
 .remove {

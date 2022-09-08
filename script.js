@@ -16,6 +16,7 @@ function init() {
 function render() {
     renderProductNav()
     renderProducts('All');
+    setActive('All');
 }
 
 /**
@@ -30,9 +31,22 @@ function renderProductNav() {
     for (let i = 0; i < uniqueCategory.length; i++) {
         const category = uniqueCategory[i];
         productNav.innerHTML += /*html*/`
-        <div class="productCategory" onclick="renderProducts('${category}')">${category}</div>
+        <div id="${category}" class="productCategory" onclick="renderProducts('${category}'); setActive('${category}');">${category}</div>
     `;
     }
+}
+
+/**
+ * This feature highlights the category.
+ * 
+ * @param {string} cat - is the selected category
+ */
+function setActive(cat) {
+    let remove = document.getElementsByClassName('productCategory');
+    for (let i = 0; i < remove.length; i++) {
+        remove[i].classList.remove('d-green');
+    }
+    document.getElementById(cat).classList.add('d-green');
 }
 
 /**
