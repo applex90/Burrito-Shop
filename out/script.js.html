@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: script.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: script.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>let basket = null;
+
+/**
+ * This function is called onload and initializes the shopping cart.
+ * 
+ */
+function init() {
+    render();
+    basket = new Basket();
+}
+
+/**
+ * This function renders the content of the page.
+ * 
+ */
+function render() {
+    renderProductNav()
+    renderProducts('All');
+}
+
+/**
+ * This function renders all categories of allProducts
+ * 
+ */
+function renderProductNav() {
+    let productNav = document.getElementById('productNav');
+    let productCategories = allProducts.map(e => e.category);
+    let uniqueCategory = productCategories.filter((v, i, a) => a.indexOf(v) === i);
+
+    for (let i = 0; i &lt; uniqueCategory.length; i++) {
+        const category = uniqueCategory[i];
+        productNav.innerHTML += /*html*/`
+        &lt;div class="productCategory" onclick="renderProducts('${category}')">${category}&lt;/div>
+    `;
+    }
+}
+
+/**
+ * This function checks which category should be rendered
+ * 
+ * @param {string} cat - is the selected category
+ */
+function renderProducts(cat) {
+    let productList = document.getElementById('productList');
+    productList.innerHTML = '';
+    let products = allProducts;
+
+    if (cat != 'All') {
+        products = allProducts.filter(e => e.category == cat);
+    }
+
+    renderCatOfProducts(products);
+}
+
+/**
+ *  This function renders a specific category of products 
+ * 
+ * @param {Array} products - Array of all filtered products
+ */
+function renderCatOfProducts(products) {
+    for (let i = 0; i &lt; products.length; i++) {
+        const product = products[i];
+
+        productList.innerHTML += /*html*/`
+        &lt;div class="productDetails">
+            &lt;div class="productInfo">
+                 &lt;h5>#${product.id} - ${product.name}&lt;/h5>
+                 &lt;div>
+                    ${product.description}
+                 &lt;/div>
+                 &lt;h3 class="price">${product.price.toFixed(2).replaceAll('.', ',')} €&lt;/h3>
+             &lt;/div>
+             &lt;div class="plus" onclick="addToBasket(${product.id})">
+                 &lt;h1>+&lt;/h1>
+             &lt;/div>
+        &lt;/div>
+        `;
+    }
+}
+
+/**
+ * This function renders the entire shopping cart.
+ * 
+ */
+function renderBasket() {
+    let basketID = document.getElementById('shoppingBasket');
+    basketID.innerHTML = ``;
+    for (let i = 0; i &lt; basket.items.length; i++) {
+        const element = basket.items[i][0];
+        basketID.innerHTML += /*html*/`
+        &lt;div class="basketDetails">
+            &lt;div class="basketElement">
+                &lt;h6>#${element.id} - ${element.name}&lt;/h6>
+                &lt;div class="basketDesciption">
+                ${element.description}
+                &lt;/div>
+                &lt;div class="basketFlex">
+                    &lt;div class="priceCalc">
+                        &lt;div>&lt;b>${element.amount}&lt;/b>&lt;/div>
+                        &lt;div>x&lt;/div>
+                        &lt;div>${element.price.toFixed(2).replaceAll('.', ',')} €  =&lt;/div>
+                        &lt;div class="price">&lt;b>${element.priceTotal.toFixed(2).replaceAll('.', ',')} €&lt;/b>&lt;/div>
+                    &lt;/div> 
+                    &lt;div class="remove" onclick="removeFromBasket(${i})"> &lt;h2>-&lt;/h2>&lt;/div>
+                &lt;/div>
+            &lt;/div> 
+        &lt;/div>
+        `;
+    }
+    basketID.innerHTML += /*html*/`
+    &lt;div class="totalCosts" id="totalContainer">
+        &lt;div>
+            &lt;div>New customer discount:&lt;/div>
+            &lt;div>&lt;b>Total:&lt;/b>&lt;/div>
+        &lt;/div>
+        &lt;div class="alignRight">
+            &lt;div>- ${basket.discount.toFixed(2).replaceAll('.', ',')} €&lt;/div>
+            &lt;div>&lt;b>${basket.priceTotal.toFixed(2).replaceAll('.', ',')} €&lt;/b>&lt;/div>
+        &lt;/div>
+    &lt;/div>
+    `;
+}
+
+/**
+ * This function is called when an item is placed in the shopping cart. It is checked whether the article already exists in the shopping cart.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ */
+function addToBasket(id) {
+    if (checkIfIdExists(id)) {
+        basket.items[foundIndexInBasket(id)][0].amount++;
+        basket.items[foundIndexInBasket(id)][0].priceTotal += basket.items[foundIndexInBasket(id)][0].price;
+    } else {
+        basket.items.push(getValuesForID(id));
+    }
+    calcTotalBasketPrice();
+    renderBasket();
+}
+
+/**
+ * This function returns the index of the element, which is existing in the shopping cart.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ * @returns - The index of the element.
+ */
+function foundIndexInBasket(id) {
+    return basket.items.map(object => object[0].id).indexOf(id);
+}
+
+/**
+ * This function checks whether the product ID is already in the shopping cart.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ * @returns - The length of the array.
+ */
+function checkIfIdExists(id) {
+    let found = basket.items.filter(e => e[0].id == id);
+    return found.length;
+}
+
+/**
+ * This function returns the object of the selected product.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ * @returns - The object of the product.
+ */
+function getValuesForID(id) {
+    return allProducts.filter(v => v.id == id);
+}
+
+/**
+ * This function deletes the product from the shopping cart or reduces the quantity of the product.
+ * It is called up when the user clicks on the minus button.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ */
+function removeFromBasket(i) {
+    if (basket.items[i][0].amount == 1) {
+        basket.items.splice(i, 1);
+    } else {
+        basket.items[i][0].amount--;
+        basket.items[i][0].priceTotal -= basket.items[i][0].price;
+    }
+    calcTotalBasketPrice();
+    renderBasket();
+}
+
+/**
+ * The function calculates the total price of all items in the shopping cart. It also controls the visibility of the price display in the shopping cart.
+ * 
+ */
+function calcTotalBasketPrice() {
+    let totalElement = document.getElementById('shoppingBasket');
+    let sum = 0;
+
+    basket.items.forEach(element => {
+        sum += element[0].priceTotal;
+    });
+
+    calcPriceTotal(sum);
+
+    if (!basket.items.length) {
+        totalElement.style.display = 'none';
+    } else {
+        totalElement.style.display = 'flex';
+    }
+}
+
+/**
+ * The function calculates the total price minus the discount.
+ * 
+ * @param {number} sum - Sum of all elements in the shopping cart.
+ */
+function calcPriceTotal(sum) {
+    if (sum >= basket.discount) {
+        basket.priceTotal = sum - basket.discount;
+    } else {
+        basket.priceTotal = 0;
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addToBasket">addToBasket</a></li><li><a href="global.html#calcPriceTotal">calcPriceTotal</a></li><li><a href="global.html#calcTotalBasketPrice">calcTotalBasketPrice</a></li><li><a href="global.html#checkIfIdExists">checkIfIdExists</a></li><li><a href="global.html#foundIndexInBasket">foundIndexInBasket</a></li><li><a href="global.html#getValuesForID">getValuesForID</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#removeFromBasket">removeFromBasket</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#renderBasket">renderBasket</a></li><li><a href="global.html#renderCatOfProducts">renderCatOfProducts</a></li><li><a href="global.html#renderProductNav">renderProductNav</a></li><li><a href="global.html#renderProducts">renderProducts</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Thu Sep 08 2022 13:56:09 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
