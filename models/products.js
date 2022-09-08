@@ -1,3 +1,7 @@
+/**
+ * This is the initial declaration of all products as objects in the allProducts array.
+ * 
+ */
 let allProducts = [
     {
         id: 1,

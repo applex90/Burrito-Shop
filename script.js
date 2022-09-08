@@ -1,15 +1,27 @@
 let basket = null;
 
+/**
+ * This function is called onload and initializes the shopping cart.
+ * 
+ */
 function init() {
     render();
     basket = new Basket();
 }
 
+/**
+ * This function renders the content of the page.
+ * 
+ */
 function render() {
     renderProductNav()
     renderProducts('All');
 }
 
+/**
+ * This function renders all categories of allProducts
+ * 
+ */
 function renderProductNav() {
     let productNav = document.getElementById('productNav');
     let productCategories = allProducts.map(e => e.category);
@@ -23,6 +35,11 @@ function renderProductNav() {
     }
 }
 
+/**
+ * This function checks which category should be rendered
+ * 
+ * @param {string} cat - is the selected category
+ */
 function renderProducts(cat) {
     let productList = document.getElementById('productList');
     productList.innerHTML = '';
@@ -35,6 +52,11 @@ function renderProducts(cat) {
     renderCatOfProducts(products);
 }
 
+/**
+ *  This function renders a specific category of products 
+ * 
+ * @param {Array} products - Array of all filtered products
+ */
 function renderCatOfProducts(products) {
     for (let i = 0; i < products.length; i++) {
         const product = products[i];
@@ -56,6 +78,10 @@ function renderCatOfProducts(products) {
     }
 }
 
+/**
+ * This function renders the entire shopping cart.
+ * 
+ */
 function renderBasket() {
     let basketID = document.getElementById('shoppingBasket');
     basketID.innerHTML = ``;
@@ -95,6 +121,11 @@ function renderBasket() {
     `;
 }
 
+/**
+ * This function is called when an item is placed in the shopping cart. It is checked whether the article already exists in the shopping cart.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ */
 function addToBasket(id) {
     if (checkIfIdExists(id)) {
         basket.items[foundIndexInBasket(id)][0].amount++;
@@ -106,19 +137,43 @@ function addToBasket(id) {
     renderBasket();
 }
 
+/**
+ * This function returns the index of the element, which is existing in the shopping cart.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ * @returns - The index of the element.
+ */
 function foundIndexInBasket(id) {
     return basket.items.map(object => object[0].id).indexOf(id);
 }
 
+/**
+ * This function checks whether the product ID is already in the shopping cart.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ * @returns - The length of the array.
+ */
 function checkIfIdExists(id) {
     let found = basket.items.filter(e => e[0].id == id);
     return found.length;
 }
 
+/**
+ * This function returns the object of the selected product.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ * @returns - The object of the product.
+ */
 function getValuesForID(id) {
     return allProducts.filter(v => v.id == id);
 }
 
+/**
+ * This function deletes the product from the shopping cart or reduces the quantity of the product.
+ * It is called up when the user clicks on the minus button.
+ * 
+ * @param {number} id - ID of the product to be added to the shopping cart.
+ */
 function removeFromBasket(i) {
     if (basket.items[i][0].amount == 1) {
         basket.items.splice(i, 1);
@@ -130,6 +185,10 @@ function removeFromBasket(i) {
     renderBasket();
 }
 
+/**
+ * The function calculates the total price of all items in the shopping cart. It also controls the visibility of the price display in the shopping cart.
+ * 
+ */
 function calcTotalBasketPrice() {
     let totalElement = document.getElementById('shoppingBasket');
     let sum = 0;
@@ -139,16 +198,21 @@ function calcTotalBasketPrice() {
     });
 
     calcPriceTotal(sum);
-    
-    if(!basket.items.length) {
+
+    if (!basket.items.length) {
         totalElement.style.display = 'none';
     } else {
         totalElement.style.display = 'flex';
     }
 }
 
+/**
+ * The function calculates the total price minus the discount.
+ * 
+ * @param {number} sum - Sum of all elements in the shopping cart.
+ */
 function calcPriceTotal(sum) {
-    if(sum>=basket.discount){
+    if (sum >= basket.discount) {
         basket.priceTotal = sum - basket.discount;
     } else {
         basket.priceTotal = 0;
