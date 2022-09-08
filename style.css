@@ -43,7 +43,7 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: 2px;
     background-color: #ADBDCC;
     border-radius: var(--radius);
-    padding: 12px;
+    padding: 6px;
     box-shadow: inset 0 0 6px 0px rgb(0 0 0);
 }
 
@@ -149,7 +149,6 @@ h1, h2, h3, h4, h5, h6 {
 #shoppingBasket {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 6px;
     overflow-x: hidden;
     overflow-y: auto;
